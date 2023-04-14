@@ -1,0 +1,360 @@
+\documentclass[12pt]{report}
+\usepackage[utf8]{inputenc} 
+\usepackage[T1]{fontenc} 
+\usepackage{graphicx}
+\usepackage{abstract}
+\usepackage{mathpazo} 
+\usepackage{float}
+\usepackage[hyphens]{url}
+\usepackage[breaklinks]{hyperref}
+\usepackage{amssymb}
+\usepackage[normalem]{ulem}
+\usepackage{amsfonts}
+\useunder{\uline}{\ul}{}
+\usepackage{longtable}
+\usepackage{verbatim}
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{accents}
+\usepackage{url}
+\usepackage{indentfirst}
+\usepackage{adjustbox}
+\usepackage{etoolbox}
+
+\singlespacing
+
+\usepackage{titlesec}
+
+\titleformat{\chapter}
+  {\Large\bfseries} % format
+  {}                % label
+  {0pt}             % sep
+  {\huge}
+
+
+
+\begin{document}
+
+% Title Page ------------------------------------------
+\begin{titlepage} 
+	\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} 
+	\center 
+	
+	\textsc{\LARGE Wilfrid Laurier University}\\[1.5cm] % School name
+	
+	\textsc{\Large ST 694 - Statistical Learning Project: Application Stream}\\[0.5cm] % Course name
+	
+	\HRule\\[0.4cm]
+	{\large\bfseries An Analysis of Financial Performance Indicators in Bankruptcy Prediction with Machine Learning
+	
+	\HRule\\[1.5cm]
+	\begin{minipage}{0.4\textwidth}
+		\begin{flushleft}
+			\large
+			\textit{Authors}\\
+                Lorenzo \textsc{Carey Jr.} \\
+                Austin \textsc{Sammon}\\
+			Wayne \textsc{Shen}\\
+		\end{flushleft}
+	\end{minipage}
+	~
+	\begin{minipage}{0.4\textwidth}
+		\begin{flushright}
+			\large
+			\textit{Instructor}\\
+			Dr. Devan \textsc{Becker} % Instructor
+		\end{flushright}
+	\end{minipage}
+	\vfill\vfill\vfill
+	
+	\vfill\vfill\vfill
+	\includegraphics[width=0.3\textwidth]{Wlu_colour_logo.jpg}\\[0.1cm] 
+	
+	\vfill
+	}
+\end{titlepage}
+
+% End of Title Page ------------------------------------
+
+% Abstract Page ------------------------------------
+% Rework on this last
+
+\renewcommand{\abstractname}{Abstract}
+\renewcommand{\abstractnamefont}{\normalfont\Huge\bfseries}
+
+\begin{abstract}
+\doublespacing
+%Write the abstract here if needed.
+
+The code of this analysis can be found from \url{https://github.com/swaynes/Statistical-Learning-Project---Bankruptcy-Prediction-with-Machine-Learning.git}
+
+%In this analysis, we will discover the best machine learning method to approximate the bankruptcy of the companies in Taiwan from 1999 to 2019. With featuring engineering, we deduced the number of predictors to 86 features to estimate non-bankrupt (0) and bankrupt (1) as the response variable. Since the dataset is heavily skewed towards non-bankrupt, every method of this analysis is performed after utilizing 10-fold cross-validation to ensure the error rate. Our results suggested that both K-nearest neighbours and random forest methods are the preferable methods to estimate the bankruptcy of 6819 companies in Taiwan. The dataset was collected from the University of California Irvine Repository of Machine Learning Databases.
+
+\end{abstract}
+% End of Abstract Page ------------------------------------
+
+% Table of Contents
+\tableofcontents
+% End of Table of Contents
+
+
+% Introduction
+\chapter{Introduction}
+In the first and second quarters of 2023, the banking industry experienced a wave of uncertainty due to the crisis of large banks such as Silicon Valley Bank and Credit Suisse. There is significant systemic risk amongst large banks in the financial sector and consequently, has a domino effect on entities exposed to this risk; in a worst-case scenario, this may result in devastating bank runs that could be a severe detriment to the global economy. To mitigate some of this risk, banks are mandated, by the Bassel regulations, to allocate capital proportional to the risk due to their lending activities; this is known as Economic Capital.  When a large company or several smaller companies declares bankruptcy due to solvency issues, this critically impacts a bank's ability to continue its lending activities. Thus, an effective predictive model for defaults would allow banks to allocate capital properly for these worst cases events and also make more informed lending decisions. As such, our goal is to produce a model that accurately predicts whether a client defaults based on their financials.   
+
+\section{Data}
+This analysis was conducted using data from the Taiwan Economic Journal over a period of 20 years (1999 -2009) \cite{Data}. In this data set, bankruptcy was defined according to Taiwan Stock Exchange business regulations \cite{TSE}. The data set includes 220 cases that resulted in company bankruptcies and 6599 non-bankruptcy cases, so a clear class imbalance exists in the dataset. In addition to the bankruptcy indicator, 95 other features were recorded, comprising company financials, all of which can be found in Table \ref{tab:features}. There was little need for any data wrangling and cleaning since the data was collected and organized in a tidy way. The only adjustments made to our data was the scaling of the training set then, using those parameters, scaling the validation and removing the Net Income Flag feature since it added no additional information (Variance of 0). We used a 90-10 split for the training and validation set, respectively. We also include a 
+
+\section{Feature Selection and Engineering} 
+
+Feature Engineering is a critical aspect of model development and is multi-faceted, however, for the purpose of this analysis, we employed minimal feature selection using a combination of statistical techniques such as correlation matrices and expert domain knowledge to remove some features. Firstly, we explored the distribution of the target variable, "Bankruptcy". \\%add boxplots here please 
+\indent There is an extreme imbalance in the target data set since approximately 97\% of clients did not default while only 3\% of them defaulted. This skewness will likely cause severe bias as the models trained on these data sets will be biased toward predicting non-bankruptcy.
+\subsection{Treatments for Class Imbalances and Feature Selection/Engineering}
+
+These methods are possible treatments for the issues of class skewness and feature selection problems in our analysis, but they are not implemented in the model. There are two primary techniques used to address class imbalances: one of them is undersampling, where observations in the minority class are duplicated synthetically. Of these methods, we may have opted for oversampling to mitigate the effect of this imbalance since it performs well with larger data sets and correspondingly large majority classes. \\
+\indent Similarly, some possible useful methods of engineering and selection that were not included in this paper are Principal Component Analysis (PCA) and LASSO or Ridge Regression. The prior, a mean of feature engineering, PCA, decomposes the features and transforms them in such a way that they are: uncorrelated; and preserves the information the original features captured while reducing the number of features. However, with LASSO, a means of feature selection, the method selects features that explain a significant amount of variance in the response target and penalizes terms that are not strongly correlated, shrinking their coefficients to 0.  \\
+\subsection{Inherent Feature Correlations}
+\indent Due to the nature of the features used in the model and how correlations are estimated, we expect there to be a significant amount of correlated variables. The features used in the model are financial indicators and general balance sheet items for companies. Often, these statistics are linear combinations of each other. For example, the features Net.Asset.Value.Per.Share A, is strongly correlated with the features Net.Asset.Value.Per.Share B and Net.Asset.Value.Per.Share C. However, these features are simply the net asset value of the company divided by the number of shares in class A, B and C. Similarly, the features Net.Asset.Value and Debt Ratio are strongly negatively correlated because the Debt Ratio is the Debt divided by the Net Asset Value. These correlations are endemic in the data set and thus, a thorough analysis of the features along with expert judgement is required to properly prune the features. Nevertheless, a standard correlation function was used to identify features with correlations over 0.8. Then, these are examined and some features are removed based on knowledge of financial statements. \\ %add correlogram
+ \\%?
+
+
+
+
+\begingroup
+\renewcommand{\cleardoublepage}{}
+\renewcommand{\clearpage}{}
+
+\chapter{Methodology} %Introduce Method
+\endgroup
+
+\section{Model Selection}
+
+As there are many models that could be used for this type of classification problem, this section serves as a justification for the ones chosen. Logistic regression is an immediate first choice because it's well suited for the binary nature of the response data and allows for reasonably well prediction accuracy. KNN is also a reasonable choice due to its simplistic implementation and arbitrary decision boundary. The dataset was analyzed using support vector machines because they have a very high predictive capability as well as their ability to produce non-linear decision boundaries that can take on almost any shape. Besides its ability to perform extremely well when strong features and/or a large number of features are present, random forest is also considered since it tends to perform well in general with seldom tuning. The last model considered for this analysis is a boosted tree, which is included because it is also robust to strongly correlated features and with the proper tuning has been shown to outperform random forest. 
+
+
+\section{K-fold Cross-Validation}
+Before we apply the method of choice, we split the data into training and validation sets as shown in Table \ref{tab:Split}. We will apply different algorithms with 10-fold cross-validation in order to find the best model with the best error rate to find the best model for predicting bankruptcy.
+
+Cross-Validation (CV) randomly splits the training data into a training set for fitting with the respective algorithm and a test set to calculate the mean square error (MSE) for a quantitative response variable or the error rate (Err) from misclassification for a qualitative response variable. Then, the CV algorithm averages the value as shown below,
+
+\begin{equation}
+    CV_{(K)} = \frac{1}{K}\cdot\sum^{K}_{i=1}MSE_{(i)}
+\end{equation}
+
+\begin{equation}
+    CV_{(K)} = \frac{1}{K}\cdot\sum^{K}_{i=1}Err_{(i)}
+\end{equation}
+
+$K$ represents the number of sets or folds that the training data will be split into and how many times the algorithm will try to refit the training sets and test sets. For K = n where $n$ is the number of observations, it is called Leave-One-Out Cross-Validation (LOOCV) by repeating the process of cross-validation $n$ times. Since there are 6168 observations in our training data, LOOCV will be computationally intensive and not feasible for our model building. Thus, we will use 10-fold Cross-Validation where $K = 10$.
+
+\section{Logistic Regression}
+With binary response variable of non-bankrupt (0) and bankrupt (1), logistic regression is the first method of choice as it predicts our classification through linear regression. That is for i = 1, $\hdots$ , n observations
+\begin{equation}
+    y_i = \frac{e^{\eta_i}}{1+e^{\eta_i}}
+\end{equation}
+Where
+\begin{equation}
+    \eta_i = \beta_0+\beta_1\cdot x_{1i}+\cdots+\beta_{95}\cdot x_{95i}
+\end{equation}
+
+Since the interpretability of the coefficients in logistic regression ($\beta_{j}$) is straightforward, logistic regression is mainly used when the goal is explainability and to gain insight into the relationships between the features and the response. Nevertheless, it also holds as a baseline for the prediction of our data.
+
+\section{K-Nearest Neighbours}
+
+K-nearest neighbours (KNN) is considered one of the simplest non-parametric methods for predicting outcomes based on input data. For each prediction point $x_{0}$, it takes the K nearest data points in the training set to estimate the response based on the average responses of said data points. 
+\begin{equation}
+    \hat{f}(x_{0}) = \frac{1}{K}\cdot\sum_{x_{i}\in \aleph_{0}} y_{i}
+\end{equation}
+For classifiers, similar to CV, Knn estimates the response based on the most vote of said data points.
+\begin{equation}
+    \text{Pr}(Y=j|X=x_i) = \frac{1}{K}\cdot\sum_{i\in \aleph_{0}}I(y_i=j)
+\end{equation}
+
+\section{Decision Trees}
+
+A decision tree is a regression on the partitioned feature space of the training data with each terminal node, or ending branch, being the mean of the observation, and thus, the trees will have low bias but high variance. Therefore, we can use bagging, or bootstrap aggregating, trees to reduce variance without affecting bias. That is,
+\begin{equation}
+    \hat{f}_{bag}(x) = \frac{1}{B}\cdot\sum^{B}_{b=1}\hat{f}^{*b}(x)
+\end{equation}
+
+\subsection{Boosted Tree}
+A boosted tree is created by combining these many decision trees in a slightly different way, as opposed to fitting a single decision tree the trees are grown sequentially learning a little bit each time. Each time a new tree is grown, information from previously grown trees is used, slowly improving each successive tree. So for b= 1, $\hdots$ , B we continually update $\hat{f}$ and the residuals as in $\eqref{boost1}$ to achieve the final boosted model as in $\eqref{boost2}$ 
+
+\begin{equation} \label{boost1}
+    \hat{f}(x) \leftarrow \hat{f}(x) + \lambda \cdot \hat{f}^{b}(x) \phantom{0000}
+    r_{i} \leftarrow r_{i} - \lambda \cdot \hat{f}^{b}(x_{i})
+\end{equation}
+
+\begin{equation} \label{boost2}
+    \hat{f}(x) = \sum^{B}_{b=1} \lambda \cdot \hat{f}^{b}(x) 
+\end{equation}
+
+Extreme gradient boosting is an extension of gradient boosting decision trees that increase computation speed and model performance. Gradient boosting makes use of a gradient descent optimization algorithm such that each new tree attempts to minimize \eqref{XGBT} until a minimum is achieved. With extreme gradient boosting trees are built using the same algorithm but make use of the Newton-Raphson method to calculate the second order gradient providing more information about where the minimum is, as well as regularization techniques which help to prevent overfitting. These additions in turn increase computational speed and model performance. 
+
+\begin{equation} \label{XGBT}
+    R(\theta) = \frac{1}{2}\sum^{n}_{i=1} (y_{i} - {f}_{\theta}(x_{i}))^{2} 
+\end{equation}
+
+\subsection{Random Forest}
+If there exist strong features in the data, when building a large number of trees most trees would look similar and thus be highly correlated. Random forests are an extension of bagged trees that help to decorrelate the trees. At each split in random forest only a random subset $m \simeq \sqrt{p}$ is considered where $p$ is the total number of features, meaning that on average $\frac{p-m}{p}$ won't consider the strong features.
+
+\section{Support Vector Machine}
+Based on maximum marginal classifiers, this method extends support vector classifiers. In this method a hyperplane is introduced that doesn't necessarily separate the two classes perfectly and allows for misclassifications of some of the observations, these are called support vectors. It then becomes an optimization problem trying to maximize the width of the margin M such that
+
+\begin{equation}
+    y_{i}(x^{T}_{i}\beta) \ge M(1-\epsilon_{i}) \phantom{0} \text{for} \phantom{0}  
+    \epsilon_{i} \ge 0; \phantom{i} \sum^{n}_{i=1} \epsilon_{i} \le C
+\end{equation}
+
+With C controlling the amount of violation to the margin called the cost, and $\epsilon$ the slack variables allowing for misclassification. Support vector machines (SVM) allow for non-linear boundaries between the classes through the use of kernels to enlarge the feature space. The support vector classifier can be represented as $\eqref{func}$ with K being the function representing the kernel. Kernels considered in this study include radial and sigmoidal in $\eqref{kernel}$ respectively.
+
+\begin{equation} \label{func}
+    f(x) = \beta_{0} + \sum_{i \in \textit{S}} \alpha_{i} K(x_{i}, x_{i'}) 
+\end{equation}
+
+\begin{equation} \label{kernel}
+    \begin{split}
+    \text{Radial Kernel: }& K(x_{i}, x_{i'}) = \exp(-\gamma \sum^{p}_{j=1} (x_{ij} - x_{i'j})^{2})
+    \\
+    \text{Sigmoidal Kernel: }& K(x_{i}, x_{i'}) = \tanh(\alpha(x_{i} \cdot x_{i'}) + \beta)
+    \end{split}
+\end{equation}
+
+\begingroup
+\renewcommand{\cleardoublepage}{}
+\renewcommand{\clearpage}{}
+
+\chapter{Models Comparison}
+\endgroup
+%Subject to change
+\section{Quantify Comparison}
+In order to measure the prediction capability of each model, we will classify bankrupt as negative, and non-bankrupt as positive,
+\begin{itemize}
+    \item Accuracy: Measured by the number of correct predictions over total predictions
+    \begin{equation}
+        \text{Accuracy} = \frac{\text{True Positive} + \text{True Negative}}{\text{Total Number of Observations}}
+    \end{equation}
+
+    \item Sensitivity: Calculated by the number of predicted non-bankrupts over total non-bankrupts
+    \begin{equation}
+        \text{Sensitivity} = \frac{\text{True Positive}}{\text{Total Number of Actual Positives}}
+    \end{equation}
+
+    \item Specificity: Calculated by the number of predicted bankrupts over total bankrupts.
+    \begin{equation}
+        \text{Specificity} = \frac{\text{True Negative}}{\text{Total Number of Actual Negatives}}
+    \end{equation}
+\end{itemize}
+\section{Result}
+
+ The optimal tuning parameters for each of the models considered in this analysis were determined via 10-fold Cross-Validation. New models were then fit using each respective method corresponding to the best tuning parameters and the entirety of the training data. Those models were used to predict the bankruptcy class for each of the samples in the validation set, the results of which are included as shown below.
+
+\begin{table}[ht]
+\doublespacing
+\centering
+\caption{Methods Comparison}
+\begin{tabular}{ccccc}
+\label{modelcomp}
+\textbf{Methods}          & \textbf{Accuracy} & \textbf{Senstivity} & \textbf{Specificity} \\ \hline
+Logistic Regression       & 0.9677                  & 0.9968              & 0.1364              \\
+KNN Classifier            & 0.9708                & 1             & 0.1364             \\
+Random Forest             & 0.9708                  & 0.9984              & 0.1818              \\
+Extreme Gradient Boosting Tree & 0.9677           & 1              & 0.0455\\
+Support Vector Machine (Radial) & 0.9662           & 1              & 0             \\  
+Support Vector Machine (Sigmoidal) & 0.9662           & 1             & 0
+\end{tabular}
+
+\end{table}
+From Table \ref{modelcomp}, the logistic regression, K-nearest neighbours, and random forest excel in accuracy and sensitivity but not as well in specificity. Furthermore, sigmoidal and radial support vector machines as well as the boosted tree perform extremely well in sensitivity but nearly zero in specificity, which emphasized that the methods predicted all observations in the validation set as non-bankrupted due to the imbalances of the data set as mentioned above. 
+
+\section{Conclusion}
+
+Because of the repercussions of the bank's lending decisions, we would like to maximize all three metrics from Table \ref{modelcomp} to conclude the correct decision when interacting with clients. To summarize, both KNN classifier and random forest methods predicted the validation set with the highest accuracy, sensitivity, and specificity compared to the remaining methods, 
+
+and thus, they are the preferable models for predicting the amount bankrupted by Taiwanese Stock Exchange business regulations.
+
+\begin{thebibliography}{9}
+\bibitem{Data}
+Liang D, Tsai CF (2020). \textit{Taiwanese Bankruptcy Prediction Data Set.}
+UCI Repository of Machine Learning Databases. \url{https://archive.ics.uci.edu/ml/datasets/Taiwanese+Bankruptcy+Prediction}.
+
+\bibitem{TSE}
+Taiwan Stock Exchange. (2022). \textit{Operating Rules of the Taiwanese Stock Exchange Corporation.}
+\url{https://twse-regulation.twse.com.tw/ENG/EN/law/DAT0201.aspx?FLCODE=FL007304}.
+
+\bibitem{Bible}
+James G, Witten D, Hastie T, Tibshirani R. (2013). \textit{An Introduction to Statistical Learning with Applications in R}. New York, Springer Science and Business Media.
+
+\bibitem{Kernel}
+Wittmann F. M. (2016). \textit{Visualization of SVM Kernels Linear, RBF, Poly and Sigmoid on Python} \url{https://gist.github.com/WittmannF/60680723ed8dd0cb993051a7448f7805}.
+
+\bibitem{xgboost_1}
+Nvidia. (2023). \textit{XGBoost}. Nvidia Corporation. \url{https://www.nvidia.com/en-us/glossary/data-science/xgboost/}
+
+\bibitem{xgboost_2}
+Shah A. (2022). \textit{XGBoost (Extreme Gradient Boosting) in Machine Learning}. Medium. \url{https://medium.com/@jwbtmf/xgboost-extreme-gradient-boosting-in-machine-learning-3427b937b35c} 
+
+\bibitem{xgboost_3}
+Keany E. (2020). \textit{What makes “XGBoost” so Extreme?}. Medium. \url{https://medium.com/analytics-vidhya/what-makes-xgboost-so-extreme-e1544a4433bb} 
+
+\end{thebibliography}
+
+\chapter{Appendices}
+\section{Supplementary Tables and Figures}
+
+\begin{table}[H]
+\caption{Financial Ratios and Corporate Governance Indicators} \label{tab:features}
+\begin{adjustbox}{width=\columnwidth,center}
+\begin{tabular}{|l|l|l|}
+\hline
+ROA(C) before interest and depreciation before interest & ROA(A) before interest and \% after tax     & ROA(B) before interest and depreciation after tax  \\ \hline
+Operating Gross Margin                                  & Realized Sales Gross Margin                 & Operating Profit Rate                              \\ \hline
+Pre-tax net Interest Rate                               & After-tax net Interest Rate                 & Non-industry income and expenditure/revenue        \\ \hline
+Continuous interest rate (after tax)                    & Operating Expense Rate                      & Research and development expense rate              \\ \hline
+Cash flow rate                                          & Interest-bearing debt interest rate         & Tax rate (A)                                       \\ \hline
+Net Value Per Share (B)                                 & Net Value Per Share (A)                     & Net Value Per Share (C)                            \\ \hline
+Persistent EPS in the Last Four Seasons                 & Cash Flow Per Share                         & Revenue Per Share                                  \\ \hline
+Operating Profit Per Share                              & Per Share Net profit before tax             & Realized Sales Gross Profit Growth Rate            \\ \hline
+Operating Profit Growth Rate                            & After-tax Net Profit Growth Rate            & Regular Net Profit Growth Rate                     \\ \hline
+Continuous Net Profit Growth Rate                       & Total Asset Growth Rate                     & Net Value Growth Rate                              \\ \hline
+Total Asset Return Growth Rate Ratio                    & Cash Reinvestment \%                        & Current Ratio                                      \\ \hline
+Quick Ratio                                             & Interest Expense Ratio                      & Total debt/Total net worth                         \\ \hline
+Debt ratio \%                                           & Net worth/Assets                            & Long-term fund suitability ratio (A)               \\ \hline
+Borrowing dependency                                    & Contingent liabilities/Net worth            & Operating profit/Paid-in capital                   \\ \hline
+Net profit before tax/Paid-in capital                   & Inventory and accounts receivable/Net value & Total Asset Turnover                               \\ \hline
+Accounts Receivable Turnover                            & Average Collection Days                     & Inventory Turnover Rate (times)                    \\ \hline
+Fixed Assets Turnover Frequency                         & Net Worth Turnover Rate (times)             & Revenue per person                                 \\ \hline
+Operating profit per person                             & Allocation rate per person                  & Working Capital to Total Assets                    \\ \hline
+Quick Assets/Total Assets                               & Current Assets/Total Assets                 & Cash/Total Assets                                  \\ \hline
+Quick Assets/Current Liability                          & Cash/Current Liability                      & Current Liability to Assets                        \\ \hline
+Operating Funds to Liability                            & Inventory/Working Capital                   & Inventory/Current Liability                        \\ \hline
+Current Liabilities/Liability                           & Working Capital/Equity                      & Current Liabilities/Equity                         \\ \hline
+Long-term Liability to Current Assets                   & Retained Earnings to Total Assets           & Total income/Total expense                         \\ \hline
+Total expense/Assets                                    & Current Asset Turnover Rate                 & Quick Asset Turnover Rate                          \\ \hline
+Working capitcal Turnover Rate                          & Cash Turnover Rate                          & Cash Flow to Sales                                 \\ \hline
+Fixed Assets to Assets                                  & Current Liability to Liability              & Current Liability to Equity                        \\ \hline
+Equity to Long-term Liability                           & Cash Flow to Total Assets                   & Cash Flow to Liability                             \\ \hline
+CFO to Assets                                           & Cash Flow to Equity                         & Current Liability to Current Assets                \\ \hline
+Liability-Assets Flag                                   & Net Income to Total Assets                  & Total assets to GNP price                          \\ \hline
+No-credit Interval                                      & Gross Profit to Sales                       & Net Income to Stockholder's Equity                 \\ \hline
+Liability to Equity                                     & Degree of Financial Leverage (DFL)          & Interest Coverage Ratio (Interest expense to EBIT) \\ \hline
+Net Income Flag                                         & Equity to Liability                         &                                                    \\ \hline
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\begin{table}[H]
+\caption{Class Breakdown of Data Split} \label{tab:Split}
+\begin{tabular}{lllll}
+\hline
+             & Training Set & Validation Set & Overall Dataset &  \\ \hline
+Bankrupt     & 198          & 22             & 220            &  \\
+Non-Bankrupt & 5970         & 629            & 6599           &  \\ \hline
+Total        & 6168         & 651            & 6819           & 
+
+\end{tabular}
+\end{table}
+
+
+
+\end{document}
