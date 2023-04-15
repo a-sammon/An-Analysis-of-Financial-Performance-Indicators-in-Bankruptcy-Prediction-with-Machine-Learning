@@ -83,8 +83,6 @@
 \renewcommand{\abstractnamefont}{\normalfont\Huge\bfseries}
 
 \begin{abstract}
-\doublespacing
-%Write the abstract here if needed.
 
 In this analysis, we will discover the best machine learning method to approximate the bankruptcy of the companies in Taiwan from 1999 to 2019. With feature engineering, we deduced the number of predictors to 86 features to estimate non-bankrupt (0) and bankrupt (1) as the response variable. Due to the skewedness towards non-bankruptcy present in the dataset 10-fold cross validation was applied to each method considered in this study to ensure the error rate is minimized. Our results suggested that both K-nearest neighbours and random forest methods are the preferable methods to estimate the bankruptcy of 6819 companies in Taiwan. The dataset was collected from the University of California Irvine Repository of Machine Learning Databases, and the code of this analysis can be found at \url{https://github.com/swaynes/Statistical-Learning-Project---Bankruptcy-Prediction-with-Machine-Learning.git}
 
@@ -102,18 +100,21 @@ In this analysis, we will discover the best machine learning method to approxima
 In the first and second quarters of 2023, the banking industry experienced a wave of uncertainty due to the crisis of large banks such as Silicon Valley Bank and Credit Suisse. There is significant systemic risk amongst large banks in the financial sector and consequently, has a domino effect on entities exposed to this risk; in a worst-case scenario, this may result in devastating bank runs that could be a severe detriment to the global economy. To mitigate some of this risk, banks are mandated, by the Bassel regulations, to allocate capital proportional to the risk due to their lending activities; this is known as Economic Capital.  When a large company or several smaller companies declares bankruptcy due to solvency issues, this critically impacts a bank's ability to continue its lending activities. Thus, an effective predictive model for defaults would allow banks to allocate capital properly for these worst cases events and also make more informed lending decisions. As such, our goal is to produce a model that accurately predicts whether a client defaults based on their financials.   
 
 \section{Data}
-This analysis was conducted using data from the Taiwan Economic Journal over a period of 20 years (1999 -2009) \cite{Data}. In this data set, bankruptcy was defined according to Taiwan Stock Exchange business regulations \cite{TSE}. The data set includes 220 cases that resulted in company bankruptcies and 6599 non-bankruptcy cases, so a clear class imbalance exists in the dataset. In addition to the bankruptcy indicator, 95 other features were recorded, comprising company financials, all of which can be found in Table \ref{tab:features}. There was little need for any data wrangling and cleaning since the data was collected and organized in a tidy way. The only adjustments made to our data was the scaling of the training set then, using those parameters, scaling the validation and removing the Net Income Flag feature since it added no additional information (Variance of 0). We used a 90-10 split for the training and validation set, respectively. We also include a histogram showing the various different distributions of the features in our model. We observe that there are severak
+This analysis was conducted using data from the Taiwan Economic Journal over a period of 20 years (1999 -2009) \cite{Data}. In this data set, bankruptcy was defined according to Taiwan Stock Exchange business regulations \cite{TSE}. The data set includes 220 cases that resulted in company bankruptcies and 6599 non-bankruptcy cases, so a clear class imbalance exists in the dataset. In addition to the bankruptcy indicator, 95 other features were recorded, comprising company financials, all of which can be found in Table \ref{tab:features}. There was little need for any data wrangling and cleaning since the data was collected and organized in a tidy way.  We used a 90-10 split for the training and validation set, respectively. We also include a histogram showing the various different distributions of the features in our model. We observe that there are several varieties of distributions in the data with some being approximately Gaussian while others are severally skewed. Identifying the distributions inside the model can provide insight into how the data should be scaled because different modelling techniques handle heterogeneous feature distributions. For example, there are several assumptions in linear regression that may not hold for the latter, while Random Forest are generally very robust to various distributions. Similarly, a majority of the features in the data set are ratios that range between 0 and 1 while others range from 0 to the hundreds of millions. Subsequently, we the standardize the training set then, using those parameters, scaling the validation and remove the Net Income Flag feature since it added no additional information (Variance of 0).
 
 \section{Feature Selection and Engineering} 
 
 Feature Engineering is a critical aspect of model development and is multi-faceted, however, for the purpose of this analysis, we employed minimal feature selection using a combination of statistical techniques such as correlation matrices and expert domain knowledge to remove some features. Firstly, we explored the distribution of the target variable, "Bankruptcy". \\%add boxplots here please 
 \indent There is an extreme imbalance in the target data set since approximately 97\% of clients did not default while only 3\% of them defaulted. This skewness will likely cause severe bias as the models trained on these data sets will be biased toward predicting non-bankruptcy.
+
 \subsection{Treatments for Class Imbalances and Feature Selection/Engineering}
 
 These methods are possible treatments for the issues of class skewness and feature selection problems in our analysis, but they are not implemented in the model. There are two primary techniques used to address class imbalances: one of them is undersampling, where observations in the minority class are duplicated synthetically. Of these methods, we may have opted for oversampling to mitigate the effect of this imbalance since it performs well with larger data sets and correspondingly large majority classes. \\
 \indent Similarly, some possible useful methods of engineering and selection that were not included in this paper are Principal Component Analysis (PCA) and LASSO or Ridge Regression. The prior, a mean of feature engineering, PCA, decomposes the features and transforms them in such a way that they are: uncorrelated; and preserves the information the original features captured while reducing the number of features. However, with LASSO, a means of feature selection, the method selects features that explain a significant amount of variance in the response target and penalizes terms that are not strongly correlated, shrinking their coefficients to 0.  \\
+
 \subsection{Inherent Feature Correlations}
-\indent Due to the nature of the features used in the model and how correlations are estimated, we expect there to be a significant amount of correlated variables. The features used in the model are financial indicators and general balance sheet items for companies. Often, these statistics are linear combinations of each other. For example, the features Net.Asset.Value.Per.Share A, is strongly correlated with the features Net.Asset.Value.Per.Share B and Net.Asset.Value.Per.Share C. However, these features are simply the net asset value of the company divided by the number of shares in class A, B and C. Similarly, the features Net.Asset.Value and Debt Ratio are strongly negatively correlated because the Debt Ratio is the Debt divided by the Net Asset Value. These correlations are endemic in the data set and thus, a thorough analysis of the features along with expert judgement is required to properly prune the features. Nevertheless, a standard correlation function was used to identify features with correlations over 0.8. Then, these are examined and some features are removed based on knowledge of financial statements. \\ %add correlogram
+
+Due to the nature of the features used in the model and how correlations are estimated, we expect there to be a significant amount of correlated variables. The features used in the model are financial indicators and general balance sheet items for companies. Often, these statistics are linear combinations of each other. For example, the features Net.Asset.Value.Per.Share A, is strongly correlated with the features Net.Asset.Value.Per.Share B and Net.Asset.Value.Per.Share C. However, these features are simply the net asset value of the company divided by the number of shares in class A, B and C. Similarly, the features Net.Asset.Value and Debt Ratio are strongly negatively correlated because the Debt Ratio is the Debt divided by the Net Asset Value. These correlations are endemic in the data set and thus, a thorough analysis of the features along with expert judgement is required to properly prune the features. Nevertheless, a standard correlation function was used to identify features with correlations over 0.8. Then, these are examined and some features are removed based on knowledge of financial statements. \\ %add correlogram
  \\%?
 
 
@@ -128,7 +129,7 @@ These methods are possible treatments for the issues of class skewness and featu
 
 \section{Model Selection}
 
-As there are many models that could be used for this type of classification problem, this section serves as a justification for the ones chosen. Logistic regression is an immediate first choice because it's well suited for the binary nature of the response data and allows for reasonably well prediction accuracy. KNN is also a reasonable choice due to its simplistic implementation and arbitrary decision boundary. The dataset was analyzed using support vector machines because they have a very high predictive capability as well as their ability to produce non-linear decision boundaries that can take on almost any shape. Besides its ability to perform extremely well when strong features and/or a large number of features are present, random forest is also considered since it tends to perform well in general with seldom tuning. The last model considered for this analysis is a boosted tree, which is included because it is also robust to strongly correlated features and with the proper tuning has been shown to outperform random forest. 
+In our analysis, we use a suite of models for this classification problem and outline the delineate the rationale for them in this section. Logistic regression is an immediate first choice because it's well suited for the binary nature of the response data and allows for reasonably well prediction accuracy. KNN is also a reasonable choice due to its simplistic implementation and arbitrary decision boundary. The dataset was analyzed using support vector machines because they have a very high predictive capability as well as their ability to produce non-linear decision boundaries that can take on almost any shape. Besides its ability to perform extremely well when strong features and/or a large number of features are present, random forest is also considered since it tends to perform well in general with seldom tuning. The last model considered for this analysis is a boosted tree, which is included because it is also robust to strongly correlated features and with the proper tuning has been shown to outperform random forest. 
 
 
 \section{K-fold Cross-Validation}
@@ -246,7 +247,7 @@ In order to measure the prediction capability of each model, we will classify ba
 \end{itemize}
 \section{Result}
 
- The optimal tuning parameters for each of the models considered in this analysis were determined via 10-fold Cross-Validation. New models were then fit using each respective method corresponding to the best tuning parameters and the entirety of the training data. Those models were used to predict the bankruptcy class for each of the samples in the validation set, the results of which are included as shown below.
+ We construct our suite of models using the optimal tuning parameters, where applicable, obtained via cross-validation, and display their performance in the below table. .
 
 \begin{table}[ht]
 \doublespacing
@@ -264,15 +265,19 @@ Support Vector Machine (Sigmoidal) & 0.9662           & 1             & 0
 \end{tabular}
 
 \end{table}
-From Table \ref{modelcomp}, the logistic regression, K-nearest neighbours, and random forest excel in accuracy and sensitivity but not as well in specificity. Furthermore, sigmoidal and radial support vector machines as well as the boosted tree perform extremely well in sensitivity but nearly zero in specificity, which emphasized that the methods predicted all observations in the validation set as non-bankrupted due to the imbalances of the data set as mentioned above. 
+
+From Table \ref{modelcomp}, it is evident that the class imbalances are having a significant impact on more than half the models in our suite as those models affected are predicting all observations as bankrupt. Logistic regression, K-nearest neighbours, and random forest excel in accuracy and sensitivity but not as well in specificity performing relatively well despite the class imbalance. However, the sigmoidal and radial support vector machines as well as the boosted tree perform reasonably well in accuracy, but the sensitivity and specificity are entirely impacted by the imbalances. Interestingly, the logistic model performs surprisingly well, relatively, on the validation set, particularly its specificity. Because of the weak representation of the majority class, it was expected that the logistic regression would not have enough information about their patterns to approximate its distribution properly. Even more so, the kNN classifier performed relatively well determining actual defaults. [insert discussion on this]
+
+\section{Discussion}
+
+The most distinct aspect of the results are how big of an impact the imbalances have on the predictive ability of the models. It is difficult to visualize SVM results, especially in higher dimensions. Though, visualizing a two dimensional case, the hyperplane generated by the SVM will be skewed towards the minority class. Moreover, the imbalances also influence the support vectors in the margin, causing an imbalance between negative and positive support vectors. This results in the SVM performing poorly on classifying minority class observations as discussed by Núñez \cite{SVM}. 
 
 \section{Conclusion}
 
-Because of the repercussions of the bank's lending decisions, we would like to maximize all three metrics from Table \ref{modelcomp} to conclude the correct decision when interacting with clients. To summarize, both KNN classifier and random forest methods predicted the validation set with the highest accuracy, sensitivity, and specificity compared to the remaining methods, 
-
-and thus, they are the preferable models for predicting the amount bankrupted by Taiwanese Stock Exchange business regulations.
+Because of the repercussions of the bank's lending decisions, we would like to maximize all three metrics from Table \ref{modelcomp} to conclude the correct decision when interacting with clients. To summarize, both KNN classifier and random forest methods predicted the validation set with the highest accuracy, sensitivity, and specificity compared to the remaining methods, and thus, they are the preferable models for predicting the amount bankrupted by Taiwanese Stock Exchange business regulations.
 
 \begin{thebibliography}{9}
+
 \bibitem{Data}
 Liang D, Tsai CF (2020). \textit{Taiwanese Bankruptcy Prediction Data Set.}
 UCI Repository of Machine Learning Databases. \url{https://archive.ics.uci.edu/ml/datasets/Taiwanese+Bankruptcy+Prediction}.
@@ -295,6 +300,13 @@ Shah A. (2022). \textit{XGBoost (Extreme Gradient Boosting) in Machine Learning}
 
 \bibitem{xgboost_3}
 Keany E. (2020). \textit{What makes “XGBoost” so Extreme?}. Medium. \url{https://medium.com/analytics-vidhya/what-makes-xgboost-so-extreme-e1544a4433bb} 
+
+\bibitem{SVM}
+Núñez H, Gonzalez-Abril L, Angulo C. (2017). \textit{Improving SVM Classification on Imbalanced Datasets by Introducing a New Bias}. Journal of Classification. pp. 427–443. 
+
+
+[1]  Núñez H, Gonzalez-Abril L, Angulo C. Improving SVM Classification on Imbalanced Datasets by Introducing a New Bias. J Classif. 2017;34:427–443.
+
 
 \end{thebibliography}
 
