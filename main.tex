@@ -68,7 +68,7 @@
 	\vfill\vfill\vfill
 	
 	\vfill\vfill\vfill
-	\includegraphics[width=0.3\textwidth]{Wlu_colour_logo.jpg}\\[0.1cm] 
+	\includegraphics[width=0.3\textwidth]{Pictures/Wlu_colour_logo.jpg}\\[0.1cm] 
 	
 	\vfill
 	}
@@ -84,7 +84,7 @@
 
 \begin{abstract}
 
-In this analysis, we will discover the best machine learning method to approximate the bankruptcy of the companies in Taiwan from 1999 to 2019. With feature engineering, we deduced the number of predictors to 86 features to estimate non-bankrupt (0) and bankrupt (1) as the response variable. Due to the skewedness towards non-bankruptcy present in the dataset 10-fold cross validation was applied to each method considered in this study to ensure the error rate is minimized. Our results suggested that both K-nearest neighbours and random forest methods are the preferable methods to estimate the bankruptcy of 6819 companies in Taiwan. The dataset was collected from the University of California Irvine Repository of Machine Learning Databases, and the code of this analysis can be found at \url{https://github.com/swaynes/Statistical-Learning-Project---Bankruptcy-Prediction-with-Machine-Learning.git}
+In this analysis, we will discover the best machine learning method to approximate the bankruptcy of the companies in Taiwan from 1999 to 2019. With feature engineering, we deduced the number of predictors to 86 features to estimate non-bankrupt (0) and bankrupt (1) as the response variable. Due to the skewness towards the non-bankruptcy present in the dataset, 10-fold cross-validation was applied to each method considered in this study to ensure the error rate is minimized. Our results suggested that both K-nearest neighbours and random forest methods are the preferable methods to estimate the bankruptcy of 6819 companies in Taiwan. The dataset was collected from the University of California Irvine Repository of Machine Learning Databases, and the code of this analysis can be found at \url{https://github.com/swaynes/Statistical-Learning-Project---Bankruptcy-Prediction-with-Machine-Learning.git}
 
 
 \end{abstract}
@@ -129,7 +129,7 @@ Due to the nature of the features used in the model and how correlations are est
 
 \section{Model Selection}
 
-In our analysis, we use a suite of models for this classification problem and outline the delineate the rationale for them in this section. Logistic regression is an immediate first choice because it's well suited for the binary nature of the response data and allows for reasonably well prediction accuracy. KNN is also a reasonable choice due to its simplistic implementation and arbitrary decision boundary. The dataset was analyzed using support vector machines because they have a very high predictive capability as well as their ability to produce non-linear decision boundaries that can take on almost any shape. Besides its ability to perform extremely well when strong features and/or a large number of features are present, random forest is also considered since it tends to perform well in general with seldom tuning. The last model considered for this analysis is a boosted tree, which is included because it is also robust to strongly correlated features and with the proper tuning has been shown to outperform random forest. 
+In our analysis, we use a suite of models for this classification problem and outline delineate the rationale for them in this section. Logistic regression is an immediate first choice because it's well suited for the binary nature of the response data and allows for reasonably well prediction accuracy. KNN is also a reasonable choice due to its simplistic implementation and arbitrary decision boundary. The dataset was analyzed using support vector machines because they have a very high predictive capability as well as their ability to produce non-linear decision boundaries that can take on almost any shape. Besides its ability to perform extremely well when strong features and/or a large number of features are present, random forest is also considered since it tends to perform well in general with seldom tuning. The last model considered for this analysis is a boosted tree, which is included because it is also robust to strongly correlated features and with the proper tuning has been shown to outperform random forest. 
 
 
 \section{K-fold Cross-Validation}
@@ -266,16 +266,20 @@ Support Vector Machine (Sigmoidal) & 0.9662           & 1             & 0
 
 \end{table}
 
-From Table \ref{modelcomp}, it is evident that the class imbalances are having a significant impact on more than half the models in our suite as those models affected are predicting all observations as bankrupt. Logistic regression, K-nearest neighbours, and random forest excel in accuracy and sensitivity but not as well in specificity performing relatively well despite the class imbalance. However, the sigmoidal and radial support vector machines as well as the boosted tree perform reasonably well in accuracy, but the sensitivity and specificity are entirely impacted by the imbalances. Interestingly, the logistic model performs surprisingly well, relatively, on the validation set, particularly its specificity. Because of the weak representation of the majority class, it was expected that the logistic regression would not have enough information about their patterns to approximate its distribution properly. Even more so, the kNN classifier performed relatively well determining actual defaults. [insert discussion on this]
+
 
 \section{Discussion}
 
-The most distinct aspect of the results are how big of an impact the imbalances have on the predictive ability of the models. It is difficult to visualize SVM results, especially in higher dimensions. Though, visualizing a two dimensional case, the hyperplane generated by the SVM will be skewed towards the minority class. Moreover, the imbalances also influence the support vectors in the margin, causing an imbalance between negative and positive support vectors. This results in the SVM performing poorly on classifying minority class observations as discussed by Núñez \cite{SVM}. 
+From Table \ref{modelcomp}, it is evident that the class imbalances are having a significant impact on more than half the models in our suite as those models affected are predicting all observations as bankrupt. Logistic regression, K-nearest neighbours, and random forest excel in accuracy and sensitivity but not as well in specificity performing relatively well despite the class imbalance. However, the sigmoidal and radial support vector machines as well as the boosted tree perform reasonably well in accuracy, but the sensitivity and specificity are entirely impacted by the imbalances. It is difficult to visualize SVM results, especially in higher dimensions. Though, visualizing a two dimensional case, the hyperplane generated by the SVM will be skewed towards the minority class. Moreover, the imbalances also influence the support vectors in the margin, causing an imbalance between negative and positive support vectors. This results in the SVM performing poorly on classifying minority class observations as discussed by Núñez \cite{SVM}. \\
+\indent Interestingly, the logistic model performs surprisingly well, relatively, on the validation set, particularly its specificity. Because of the weak representation of the majority class, it was expected that the logistic regression would not have enough information about their patterns to approximate its distribution properly. Even more so, the kNN classifier performed relatively well determining actual defaults and there is some theoretical basis to explain kNN's performance. The kNN classifier is robust to influences from the actual magnitude of classes in the response variable and consequently won't be biased to any class regardless of its size. This is a possibility of why this classifier had a significantly higher specificity compared to other models.  
+
+The most distinct aspect of the results are how big of an impact the imbalances have on the predictive ability of the models. However, the is likely because of the manner in how each model makes it classification; this highlights how, for some problems, different models are inherently more robust than others. 
 
 \section{Conclusion}
 
-Because of the repercussions of the bank's lending decisions, we would like to maximize all three metrics from Table \ref{modelcomp} to conclude the correct decision when interacting with clients. To summarize, both KNN classifier and random forest methods predicted the validation set with the highest accuracy, sensitivity, and specificity compared to the remaining methods, and thus, they are the preferable models for predicting the amount bankrupted by Taiwanese Stock Exchange business regulations.
-
+One of the most peculiar insights from this analysis is how certain models are inherently superior performers for a certain set of problems. However, it invokes an endeavor to improve the performance of weaker performing models on certain problems. A possible treatment of this may be examining the loss functions in the weaker models. For example, for the class imbalance issue in our data set, models using a linear loss function like Classification Error will not be able to able to detect subtle changes in the minority class. However, convex loss functions such as Cross Entropy Loss are very sensitive to small changes in the response probability when the feature is close to zero. Thus, exchanging the linear loss function for a more convex one, may improve the sensitivity of the under-fit models. \\ 
+\indent Although the Random Forest and kNN classifer had the best performance in our analysis, we would not recommend them for use in risk management decisions. These models only produce a true non-default approximately 18\% of the time. Due to the repercussions insufficient economic capital caused by the models low specificity, we would recommend maximizing the important metrics from the from Table \ref{modelcomp}. This may be achieved through the use of feature engineering like PCA or selection methods like LASSO combined with a refined domain knowledge. \\
+\indent After such, these models may be further validated and if their is a reasonable increase in the relevent performance metrics, it may generate insight and accurate predictions of bankruptcy amongst companies in a financial institution's loan portfolio. 
 \begin{thebibliography}{9}
 
 \bibitem{Data}
@@ -302,10 +306,7 @@ Shah A. (2022). \textit{XGBoost (Extreme Gradient Boosting) in Machine Learning}
 Keany E. (2020). \textit{What makes “XGBoost” so Extreme?}. Medium. \url{https://medium.com/analytics-vidhya/what-makes-xgboost-so-extreme-e1544a4433bb} 
 
 \bibitem{SVM}
-Núñez H, Gonzalez-Abril L, Angulo C. (2017). \textit{Improving SVM Classification on Imbalanced Datasets by Introducing a New Bias}. Journal of Classification. pp. 427–443. 
-
-
-[1]  Núñez H, Gonzalez-Abril L, Angulo C. Improving SVM Classification on Imbalanced Datasets by Introducing a New Bias. J Classif. 2017;34:427–443.
+Núñez H, Gonzalez-Abril L, Angulo C. (2017). \textit{Improving SVM Classification on Imbalanced Datasets by Introducing a New Bias}. Journal of Classification. pp. 427–443.
 
 
 \end{thebibliography}
